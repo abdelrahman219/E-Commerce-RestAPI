@@ -7,3 +7,6 @@ class Product(models.Model):
     description = models.TextField(null=True , blank=True)
     updated_at = models.DateTimeField(auto_now= True, blank=True)
     price = models.IntegerField(null=False)
+
+    def __str__(self):
+        return self.name              # function to change name 
