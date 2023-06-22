@@ -1,7 +1,7 @@
 from django.db import models
 from products.models import Product 
-from users.models import UserModel
+from django.conf import settings
 # Create your models here.
 class WishList(models.Model):
     products = models.ManyToManyField(Product) 
-    user = models.OneToOneField(UserModel , related_name = 'wishlist' , on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL , related_name = 'wishlist' , on_delete=models.CASCADE)
