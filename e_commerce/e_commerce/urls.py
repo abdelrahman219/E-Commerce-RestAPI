@@ -1,12 +1,18 @@
-
+from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
+from cart.views import add_to_cart, get_cart
+from django.conf.urls.static import static
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('user/', include('users.urls'))
-]
+    path('user/', include('users.urls')),
+    path("admin/", admin.site.urls),
+    path('products/', include('products.urls')),
+    path("api/cart/add/", add_to_cart, name="add-to-cart"),
+    path("api/cart/get/", get_cart, name="get-cart"),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -26,7 +26,7 @@ def register(request):
             message=f'Thank you {request.data.get("first_name")} for joining us, and we look forward to seeing you around the site!'
             sender ='djangocommerce@gmail.com'
             recipient_lis = [request.data.get("email")]
-            send_email(subject=subject, message=message, from_email=sender, recipient_list=recipient_lis)
+            #send_email(subject=subject, message=message, from_email=sender, recipient_list=recipient_lis)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
