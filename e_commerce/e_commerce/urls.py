@@ -16,7 +16,7 @@ Including another URLconf
 import statistics
 from django.conf import settings
 from django.contrib import admin
-from django.urls import path
+from django.urls import path,include
 from cart.views import add_to_cart
 from django.conf.urls.static import static
 
@@ -24,6 +24,10 @@ from cart.views import get_cart
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path('products/', include('products.urls')),
     path("api/cart/add/", add_to_cart, name="add-to-cart"),
     path("api/cart/get/", get_cart, name="get-cart"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+
