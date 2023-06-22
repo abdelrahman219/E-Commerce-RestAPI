@@ -13,9 +13,17 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import statistics
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path
+from cart.views import add_to_cart
+from django.conf.urls.static import static
+
+from cart.views import get_cart
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-]
+    path("admin/", admin.site.urls),
+    path("api/cart/add/", add_to_cart, name="add-to-cart"),
+    path("api/cart/get/", get_cart, name="get-cart"),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
