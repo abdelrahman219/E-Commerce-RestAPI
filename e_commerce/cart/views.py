@@ -61,45 +61,85 @@ def add_to_cart(request):
         )
 
 
-@api_view(["GET"])
+
+@api_view(["GET" , "DELETE"])
 @authentication_classes([JWTAuthentication])
 def get_cart(request):
-    try:
-        cart = Cart.objects.get(user=request.user)
+    if request.method == "GET" :
+        try:
+            cart = Cart.objects.get(user=request.user)
 
-        cart_serializer = CartSerializer(cart)
-        return Response(cart_serializer.data, status=status.HTTP_200_OK)
+            cart_serializer = CartSerializer(cart)
+            return Response(cart_serializer.data, status=status.HTTP_200_OK)
 
-    except Cart.DoesNotExist:
-        return Response({"error": "Cart is empty."}, status=status.HTTP_404_NOT_FOUND)
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Cart.DoesNotExist:
+            return Response({"error": "Cart is empty."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    elif request.method == "DELETE":
+        try:
+            cart = Cart.objects.get(user=request.user)
+            total_price = cart.total_price
+            cart.delete()
+            
+            # Send email to the user
+            subject = "Cart Checkout"
+            message = f"Thank you for your purchase! Total price: {total_price}"
+            from_email = "muhammadjalal98@gmail.com"
+            recipient_list = [request.user.email]
+            
+            send_email(subject, message, from_email, recipient_list)
+            
+            return Response({"message": "Cart deleted and email sent."}, status=status.HTTP_200_OK)
+
+        except Cart.DoesNotExist:
+            return Response({"error": "Cart is empty."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
 
-@api_view(["DELETE"])
-@authentication_classes([JWTAuthentication])
-def checkout(request):
-    try:
-        cart = Cart.objects.get(user=request.user)
-        total_price = cart.total_price
-        cart.delete()
+
+# @api_view(["GET"])
+# @authentication_classes([JWTAuthentication])
+# def get_cart(request):
+#     try:
+#         cart = Cart.objects.get(user=request.user)
+
+#         cart_serializer = CartSerializer(cart)
+#         return Response(cart_serializer.data, status=status.HTTP_200_OK)
+
+#     except Cart.DoesNotExist:
+#         return Response({"error": "Cart is empty."}, status=status.HTTP_404_NOT_FOUND)
+#     except Exception as e:
+#         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+# @api_view(["DELETE"])
+# @authentication_classes([JWTAuthentication])
+# def checkout(request):
+#     try:
+#         cart = Cart.objects.get(user=request.user)
+#         total_price = cart.total_price
+#         cart.delete()
         
-        # Send email to the user
-        subject = "Cart Checkout"
-        message = f"Thank you for your purchase! Total price: {total_price}"
-        from_email = "muhammadjalal98@gmail.com"
-        recipient_list = [request.user.email]
+#         # Send email to the user
+#         subject = "Cart Checkout"
+#         message = f"Thank you for your purchase! Total price: {total_price}"
+#         from_email = "muhammadjalal98@gmail.com"
+#         recipient_list = [request.user.email]
         
-        send_email(subject, message, from_email, recipient_list)
+#         send_email(subject, message, from_email, recipient_list)
         
-        return Response({"message": "Cart deleted and email sent."}, status=status.HTTP_200_OK)
+#         return Response({"message": "Cart deleted and email sent."}, status=status.HTTP_200_OK)
 
-    except Cart.DoesNotExist:
-        return Response({"error": "Cart is empty."}, status=status.HTTP_404_NOT_FOUND)
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#     except Cart.DoesNotExist:
+#         return Response({"error": "Cart is empty."}, status=status.HTTP_404_NOT_FOUND)
+#     except Exception as e:
+#         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
