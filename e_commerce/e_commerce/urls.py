@@ -1,21 +1,27 @@
-"""e_commerce URL Configuration
+# from django.conf import settings
+# from django.contrib import admin
+# from wish_list import views
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+# from django.urls import include, path
+# from cart.views import add_to_cart, get_cart
+# from django.conf.urls.static import static
+
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+from django.conf import settings
 from django.contrib import admin
-from django.urls import path
-
+from django.urls import include, path
+from cart.views import add_to_cart, get_cart
+from django.conf.urls.static import static
+from wish_list.views import get_wish_list
 urlpatterns = [
-    path('admin/', admin.site.urls),
-]
+    path('user/', include('users.urls')),
+    path("admin/", admin.site.urls),
+    path('products/', include('products.urls')),
+    path("api/cart/add/", add_to_cart, name="add-to-cart"),
+    path("api/cart/get/", get_cart, name="get-cart"),
+    # path("api/cart/delete/", checkout, name="delete-cart"),
+    path('wishlist/', get_wish_list),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
